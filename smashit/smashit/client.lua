@@ -18,6 +18,22 @@ local function DebugMessage(message)
     print("^3[SMASHIT DEBUG]:^7 " .. message)
 end
 
+-- Function to get random loot based on loot table
+local function GetRandomLoot()
+    local randomChance = math.random(1, 100) -- Generate a random number between 1 and 100
+    local cumulativeChance = 0
+
+    -- Loop through the loot table and return the corresponding item
+    for _, loot in ipairs(LootTable) do
+        cumulativeChance = cumulativeChance + loot.chance
+        if randomChance <= cumulativeChance then
+            return loot.item
+        end
+    end
+
+    return "nothing" -- Default to finding nothing
+end
+
 -- Function to search a vehicle and give loot
 local function SearchVehicle(vehicle)
     -- Debugging: Log that the robbing has started
@@ -58,7 +74,7 @@ local function StartSearchProgress(vehicle)
         anim = "base",
         flags = 49,
     }, {}, {}, function() -- On completion
-        SearchVehicle(vehicle) -- Make sure this function is called properly
+        SearchVehicle(vehicle)
     end, function() -- On cancel
         QBCore.Functions.Notify("Search cancelled.", "error")
     end)
@@ -114,22 +130,6 @@ local function SmashWindow()
 
     -- Automatically start searching the vehicle
     StartSearchProgress(vehicle)
-end
-
--- Function to get random loot based on loot table
-local function GetRandomLoot()
-    local randomChance = math.random(1, 100) -- Generate a random number between 1 and 100
-    local cumulativeChance = 0
-
-    -- Loop through the loot table and return the corresponding item
-    for _, loot in ipairs(LootTable) do
-        cumulativeChance = cumulativeChance + loot.chance
-        if randomChance <= cumulativeChance then
-            return loot.item
-        end
-    end
-
-    return "nothing" -- Default to finding nothing
 end
 
 -- Add radial menu option for smashing windows
